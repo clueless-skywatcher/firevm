@@ -14,19 +14,21 @@ CPInfo *GetConstantPool(FILE *fp, int count)
         case CONSTANT_INT:
         {
             uint32_t intConst = ReadU4(fp);
+            constantPool[i].info.intInf.value = intConst;
             break;
         }
         case CONSTANT_FLOAT:
         {
             uint32_t temp = ReadU4(fp);
             float floatConst = RECAST(temp, float);
+            constantPool[i].info.floatInf.value = floatConst;
             break;
         }
         case CONSTANT_LONG:
         {
             uint32_t longConst1 = ReadU4(fp);
             uint32_t longConst2 = ReadU4(fp);
-            uint64_t longConst = (longConst1 << 32) | longConst2;
+            constantPool[i].info.longInf.value = (longConst1 << 32) | longConst2;
             break;
         }
         case CONSTANT_DOUBLE:
@@ -34,7 +36,7 @@ CPInfo *GetConstantPool(FILE *fp, int count)
             uint32_t longConst1 = ReadU4(fp);
             uint32_t longConst2 = ReadU4(fp);
             uint64_t temp = (longConst1 << 32) | longConst2;
-            double doubleConst = RECAST(temp, double);
+            constantPool[i].info.doubleInf.value = RECAST(temp, double);
             break;
         }
         case CONSTANT_UTF8:
@@ -53,9 +55,19 @@ CPInfo *GetConstantPool(FILE *fp, int count)
         }
         case CONSTANT_STRINGREF:
         {
-            ReadU2(fp);
+            constantPool[i].info.stringInf.index = ReadU2(fp);
             break;
         }
+        case CONSTANT_FIELDREF:
+        case CONSTANT_METHODREF:
+        case CONSTANT_INTERFACEMETHODREF:
+        case CONSTANT_NAMEANDTYPE:
+        case CONSTANT_METHODHANDLE:
+        case CONSTANT_METHODTYPE:
+        case CONSTANT_DYNAMIC:
+        case CONSTANT_INVOKEDYNAMIC:
+        case CONSTANT_MODULE:
+        case CONSTANT_PACKAGE:
         default:
             ReadU4(fp);
             break;

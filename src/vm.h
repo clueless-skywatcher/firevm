@@ -10,6 +10,26 @@
 #include "utils.h"
 #include "cpinfo.h"
 
-int ReadVM(char *filename);
+typedef struct {
+    uint16_t accessFlags;
+    uint16_t thisClass;
+    uint16_t superClass;
+} ClassStructure;
+
+typedef struct {
+    uint32_t magicNumber;
+    uint16_t minorVersion;
+    uint16_t majorVersion;
+    uint16_t constantPoolCount;
+    CPInfo *constantPool;
+    ClassStructure classStructure;
+    uint16_t interfaceCount;
+    uint16_t *interfaces;
+} ClassFile;
+
+ClassFile *ReadClassFile(char *filename);
+void ShowClassFile(ClassFile *classFile);
+
+ClassStructure GetClassStructure(FILE *fp);
 
 #endif

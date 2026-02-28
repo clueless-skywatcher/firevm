@@ -1,5 +1,6 @@
 #include "vm.h"
 
 int main(int argc, char **argv) {
-    return ReadVM(argv[1]);
+    ClassFile *file = ReadClassFile(argv[1]);
+    ShowClassFile(file);
 }
