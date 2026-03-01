@@ -9,6 +9,7 @@
 
 #include "utils.h"
 #include "cpinfo.h"
+#include "addlinfo.h"
 
 typedef struct {
     uint16_t accessFlags;
@@ -25,6 +26,12 @@ typedef struct {
     ClassStructure classStructure;
     uint16_t interfaceCount;
     uint16_t *interfaces;
+    uint16_t fieldCount;
+    FieldInfo *fields;
+    uint16_t methodCount;
+    MethodInfo *methods;
+    uint16_t attributeCount;
+    AttrInfo *attributes;
 } ClassFile;
 
 ClassFile *ReadClassFile(char *filename);
