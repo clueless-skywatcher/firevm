@@ -55,7 +55,7 @@ ClassFile *ReadClassFile(char *filename) {
     classFile->fieldCount = fieldCount;
     FieldInfo *fields = (FieldInfo *) malloc(fieldCount * sizeof(FieldInfo));
     for (int i = 0; i < fieldCount; i++) {
-        fields[i] = ReadField(fp);
+        fields[i] = ReadField(fp, cpInfo);
     }
     classFile->fields = fields;
 
@@ -63,7 +63,7 @@ ClassFile *ReadClassFile(char *filename) {
     classFile->methodCount = methodCount;
     MethodInfo *methods = (MethodInfo *) malloc(methodCount * sizeof(MethodInfo));
     for (int i = 0; i < methodCount; i++) {
-        methods[i] = ReadMethod(fp);
+        methods[i] = ReadMethod(fp, cpInfo);
     }
     classFile->methods = methods;
     
@@ -103,16 +103,30 @@ void ShowClassFile(ClassFile *classFile) {
             printf("\t#%d: Long %lu\n", i, classFile->constantPool[i].info.longInf.value);
         } else if (classFile->constantPool[i].tag == CONSTANT_DOUBLE) {
             printf("\t#%d: Double %f\n", i, classFile->constantPool[i].info.doubleInf.value);
+        } else if (classFile->constantPool[i].tag == CONSTANT_NAMEANDTYPE) {
+            printf("\t#%d: NameAndType #%d:#%d // %s:%s\n", 
+                i, 
+                classFile->constantPool[i].info.nameAndTypeInf.nameIndex, 
+                classFile->constantPool[i].info.nameAndTypeInf.descriptorIndex, 
+                classFile->constantPool[
+                    classFile->constantPool[i].info.nameAndTypeInf.nameIndex
+                ].info.utf8inf.bytes, 
+                classFile->constantPool[
+                    classFile->constantPool[i].info.nameAndTypeInf.descriptorIndex
+                ].info.utf8inf.bytes
+            );
         }
     } 
 
     for (int i = 0; i < classFile->fieldCount; i++) {
         FieldInfo field = classFile->fields[i];
         printf("Field #%d: #%d AccessFlags=0x%04x // %s\n", i, field.nameIndex, field.accessFlags, classFile->constantPool[field.nameIndex].info.utf8inf.bytes);
+        ShowField(field);
     }
 
     for (int i = 0; i < classFile->methodCount; i++) {
         MethodInfo method = classFile->methods[i];
         printf("Method #%d: #%d AccessFlags=0x%04x // %s\n", i, method.nameIndex, method.accessFlags, classFile->constantPool[method.nameIndex].info.utf8inf.bytes);
+        ShowMethod(method);
     }
 }

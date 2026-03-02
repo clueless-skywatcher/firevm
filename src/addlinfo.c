@@ -1,6 +1,6 @@
 #include "addlinfo.h"
 
-FieldInfo ReadField(FILE *fp)
+FieldInfo ReadField(FILE *fp, CPInfo *cp)
 {
     FieldInfo field = {};
 
@@ -12,15 +12,25 @@ FieldInfo ReadField(FILE *fp)
     AttrInfo *attrs = (AttrInfo *) malloc(sizeof(AttrInfo) * field.attrCount);
 
     for (int i = 0; i < field.attrCount; i++) {
-        attrs[i] = ReadAttr(fp);
+        attrs[i] = ReadAttr(fp, cp);
     }
 
     field.attributes = attrs;
-
     return field;
 }
 
-MethodInfo ReadMethod(FILE *fp)
+void ShowField(FieldInfo fieldInfo)
+{
+    printf("\tAccess Flags: %u\n", fieldInfo.accessFlags);
+    printf("\tName Index: %u\n", fieldInfo.nameIndex);
+    printf("\tDescriptor Index: %u\n", fieldInfo.descriptorIndex);
+    printf("\tAttribute Count: %u\n", fieldInfo.attrCount);
+    for (int i = 0; i < fieldInfo.attrCount; i++) {
+        printf("\t\tAttribute: %s\n", fieldInfo.attributes[i].name);
+    }
+}
+
+MethodInfo ReadMethod(FILE *fp, CPInfo *cp)
 {
     MethodInfo method = {};
 
@@ -32,7 +42,7 @@ MethodInfo ReadMethod(FILE *fp)
     AttrInfo *attrs = (AttrInfo *) malloc(sizeof(AttrInfo) * method.attrCount);
 
     for (int i = 0; i < method.attrCount; i++) {
-        attrs[i] = ReadAttr(fp);
+        attrs[i] = ReadAttr(fp, cp);
     }
 
     method.attributes = attrs;
@@ -40,10 +50,21 @@ MethodInfo ReadMethod(FILE *fp)
     return method;
 }
 
-AttrInfo ReadAttr(FILE *fp)
+void ShowMethod(MethodInfo methodInfo)
 {
+    printf("\tAccess Flags: %u\n", methodInfo.accessFlags);
+    printf("\tName Index: %u\n", methodInfo.nameIndex);
+    printf("\tDescriptor Index: %u\n", methodInfo.descriptorIndex);
+    printf("\tAttribute Count: %u\n", methodInfo.attrCount);
+    for (int i = 0; i < methodInfo.attrCount; i++) {
+        printf("\t\tAttribute: %s\n", methodInfo.attributes[i].name);
+    }
+}
+
+AttrInfo ReadAttr(FILE *fp, CPInfo *cp) {
     AttrInfo attrInfo = {};
     attrInfo.nameIndex = ReadU2(fp);
+    attrInfo.name = (char *) cp[attrInfo.nameIndex].info.utf8inf.bytes;
     attrInfo.length = ReadU4(fp);
 
     uint8_t *attrs = (uint8_t *) malloc(attrInfo.length * sizeof(uint8_t));
@@ -55,4 +76,10 @@ AttrInfo ReadAttr(FILE *fp)
     attrInfo.info = attrs;
 
     return attrInfo;
+}
+
+void ShowAttr(AttrInfo attrInfo)
+{
+    printf("\tName Index: %u\n", attrInfo.nameIndex);
+    printf("\tLength: %u\n", attrInfo.length);
 }

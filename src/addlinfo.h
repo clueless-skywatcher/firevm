@@ -5,12 +5,14 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "cpinfo.h"
 #include "utils.h"
 
 typedef struct
 {
     /* data */
     uint16_t nameIndex;
+    char *name;
     uint32_t length;
     uint8_t *info;
 } AttrInfo;
@@ -35,8 +37,13 @@ typedef struct
     AttrInfo *attributes;
 } MethodInfo;
 
-AttrInfo ReadAttr(FILE *fp);
-FieldInfo ReadField(FILE *fp);
-MethodInfo ReadMethod(FILE *fp);
+AttrInfo ReadAttr(FILE *fp, CPInfo *cp);
+void ShowAttr(AttrInfo attrInfo);
+
+FieldInfo ReadField(FILE *fp, CPInfo *cp);
+void ShowField(FieldInfo fieldInfo);
+
+MethodInfo ReadMethod(FILE *fp, CPInfo *cp);
+void ShowMethod(MethodInfo methodInfo);
 
 #endif

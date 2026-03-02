@@ -57,6 +57,11 @@ typedef struct {
     uint16_t index;
 } StringRefInfo;
 
+typedef struct {
+    uint16_t nameIndex;
+    uint16_t descriptorIndex;
+} NameAndTypeInfo;
+
 // Info and Constant Pool Info
 
 typedef union
@@ -68,6 +73,7 @@ typedef union
     LongInfo longInf;
     DoubleInfo doubleInf;
     StringRefInfo stringInf;
+    NameAndTypeInfo nameAndTypeInf;
 } Info;
 
 typedef struct

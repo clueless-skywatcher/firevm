@@ -61,7 +61,15 @@ CPInfo *GetConstantPool(FILE *fp, int count)
         case CONSTANT_FIELDREF:
         case CONSTANT_METHODREF:
         case CONSTANT_INTERFACEMETHODREF:
-        case CONSTANT_NAMEANDTYPE:
+        case CONSTANT_NAMEANDTYPE: {
+            uint16_t index1 = ReadU2(fp);
+            uint16_t index2 = ReadU2(fp);
+            if (tag == CONSTANT_NAMEANDTYPE) {
+                constantPool[i].info.nameAndTypeInf.nameIndex = index1;
+                constantPool[i].info.nameAndTypeInf.descriptorIndex = index2;
+            }
+            break;
+        }
         case CONSTANT_METHODHANDLE:
         case CONSTANT_METHODTYPE:
         case CONSTANT_DYNAMIC:
